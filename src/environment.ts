@@ -6,6 +6,6 @@ export default class Environment {
     host: "localhost",
     user: "root",
     password: "",
-    database: "benchmark",
+    database: "test_database",
   };
 }

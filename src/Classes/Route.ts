@@ -17,18 +17,23 @@ export interface MiddlewareCallback {
   (req: FastifyRequest, params: any): Promise<object | boolean>;
 }
 
+type ReqMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH" | "OPTIONS" | "ALL";
+
 export default class Route {
   private static initialized = false;
 
   static set(
     route: string,
     callback: WebCallback,
-    methods: string | string[] = "GET",
-    middleware: MiddlewareCallback = null,
+    methods: ReqMethod | ReqMethod[] = "GET",
+    middleware: MiddlewareCallback | MiddlewareCallback[] = null,
     mwFail: WebCallback = null
   ) {
     if (!Array.isArray(methods)) {
       methods = [methods];
+    }
+    if (!Array.isArray(middleware)) {
+      middleware = middleware ? [middleware] : [];
     }
     const handle = this.handle(callback, middleware, mwFail);
 
@@ -60,28 +65,29 @@ export default class Route {
 
   private static handle(
     cb: WebCallback,
-    middleware: MiddlewareCallback,
+    middleware: MiddlewareCallback[],
     mwFail: WebCallback
   ) {
     return async (req: FastifyRequest, res: FastifyReply) => {
-      // console.log("req:", req.url);
-      if (middleware) {
-        const user = await middleware(req, req.params as any);
-        if (!user) {
-          if (mwFail) {
-            this.convertResponse(res, await mwFail(req, req.params as any));
+      if (middleware.length) {
+        for (const mw of middleware) {
+          const user = await mw(req, req.params as any);
+          if (!user) {
+            if (mwFail) {
+              this.convertResponse(res, await mwFail(req, req.params as any));
+            } else {
+              res.code(403).send({
+                success: false,
+                code: 403,
+                message: "Forbidden (MW)",
+              });
+            }
+            return;
           } else {
-            res.code(403).send({
-              success: false,
-              code: 403,
-              message: "Forbidden (MW)",
-            });
-          }
-          return;
-        } else {
-          Middleware.setAuth(true);
-          if (typeof user === "object") {
-            Middleware.setUser(user);
+            Middleware.setAuth(true);
+            if (typeof user === "object") {
+              Middleware.setUser(user);
+            }
           }
         }
       }
