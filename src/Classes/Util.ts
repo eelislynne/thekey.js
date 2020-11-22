@@ -15,7 +15,7 @@ export default class Util {
     return crypto.createHash("md5").update(string).digest("hex");
   }
 
-  public static getGlientIP(req: FastifyRequest) {
+  public static getClientIP(req: FastifyRequest) {
     const cfHeader = req.headers["HTTP_CF_CONNECTING_IP"];
     if (!cfHeader) {
       return req.ip;

@@ -5,18 +5,8 @@ import Util from "../classes/Util";
 import BaseController from "../controllers/BaseController";
 
 Route.set("/", async (req) => {
-
-  await DB.update(
-    "players",
-    {
-      name: "testing",
-    },
-    "uid = ?",
-    3
-  );
-
   return response().json({
-    "req_ip": Util.getGlientIP(req),
+    "req_ip": Util.getClientIP(req),
     "success": true
   });
 }, "GET");
@@ -28,8 +18,8 @@ async function middleware() {
 async function fail() {
   return {
     code: 403,
-    data: "Middleware does not allow this"
-  } as WebResponse;
+    data: {error: "Unauthorised", message: "Please Login or ask your administrator for permissions to this page."}
+  };
 }
 
 Route.set("/mw/:test", async () => {

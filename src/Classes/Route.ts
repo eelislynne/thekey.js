@@ -39,25 +39,23 @@ export default class Route {
     const handle = this.handle(callback, middleware, mwFail);
 
     for (const method of methods) {
-      const meth = method.toLowerCase();
-      if (meth === "get") {
-        server.get(route, handle);
-      } else if (meth === "post") {
-        server.post(route, handle);
-
-        server.options(route, (req, res) => {
-          res.code(200).send();
-        });
-      } else if (meth === "put") {
-        server.put(route, handle);
-      } else if (meth === "delete") {
-        server.delete(route, handle);
-      } else if (meth === "patch") {
-        server.patch(route, handle);
-      } else if (meth === "options") {
-        server.options(route, handle);
-      } else {
-        server.all(route, handle);
+      switch(method.toLowerCase()) {
+        case "get":
+          server.get(route, handle);
+        case "post":
+          server.post(route, handle);
+          server.options(route, (_, res) => {res.code(200).send()});
+        break;
+        case "put":
+          server.put(route, handle)
+        case "delete":
+          server.delete(route, handle)
+        case "patch":
+          server.patch(route, handle)
+        case "options":
+          server.options(route, handle)
+        default:
+          server.all(route, handle)
       }
     }
 
