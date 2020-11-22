@@ -1,8 +1,8 @@
-import DB from "../Classes/DB";
-import response, { WebResponse } from "../Classes/Response";
-import Route from "../Classes/Route";
-import Util from "../Classes/Util";
-import BaseController from "../Controllers/BaseController";
+import DB from "../classes/DB";
+import response, { WebResponse } from "../classes/Response";
+import Route from "../classes/Route";
+import Util from "../classes/Util";
+import BaseController from "../controllers/BaseController";
 
 Route.set("/", async (req) => {
 

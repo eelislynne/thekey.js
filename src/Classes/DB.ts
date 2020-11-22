@@ -10,9 +10,11 @@ export default class DB {
 
   static connect() {
     return new Promise<boolean>((res, rej) => {
-      if (this.connected()) {
+      if (this.connected())
         return res();
-      }
+      
+      if (!Environment.database.enabled)
+        return rej("Database not enabled in environment.ts");
 
       const pool = createPool(Environment.database);
       pool.on("error", (err: any) => {

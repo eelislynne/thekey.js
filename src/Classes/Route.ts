@@ -2,6 +2,7 @@ import fastify, { FastifyReply, FastifyRequest } from "fastify";
 import Environment from "../environment";
 import Middleware from "./Middleware";
 import { WebResponse } from "./Response";
+import Logger from "./Logger";
 
 const server = fastify();
 server.register(require("fastify-formbody"));
@@ -104,14 +105,12 @@ export default class Route {
   }
 
   private static init() {
-    if (this.initialized) return;
-    this.initialized = true;
-    server.listen(Environment.port, (err) => {
-      if (err) {
-        console.log("error starting listener:", err);
-        return;
-      }
-      console.log("TheKey listening on port", Environment.port);
-    });
+    if (!this.initialized) {
+      this.initialized = true;
+      server.listen(Environment.port, (err) => {
+        if (err) return Logger.err(`error starting listener ${err}`);
+        Logger.out(`web server listening on ${Environment.url}:${Environment.port}`);
+      });
+    }
   }
 }
