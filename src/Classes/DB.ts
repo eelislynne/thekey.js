@@ -42,15 +42,13 @@ export default class DB {
     }
   }
 
-  static insert(...args: any) {
+  static insert(table: string, value: object) {
     return new Promise(async (resolve, reject) => {
       if (!this.connected()) await this.connect();
 
-      const a = [...args];
+      const query = `INSERT INTO ${this.connection.escapeId(table)} SET ?`;
 
-      const query = a.shift();
-
-      this.connection.query(query, a, function (err, results) {
+      this.connection.query(query, value, function (err, results) {
         if (err) {
           console.log("mysql error", err);
           reject(err);
@@ -83,6 +81,32 @@ export default class DB {
 
       const args = Array.from(arguments);
       args.splice(0, 3);
+      params.push(...args);
+    }
+
+    return new Promise(async (resolve, reject) => {
+      if (!this.connected()) await this.connect();
+
+      this.connection.query(query, params, function (err, results) {
+        if (err) {
+          console.log("mysql error", err);
+          reject(err);
+        } else {
+          resolve(results);
+        }
+      });
+    });
+  }
+
+  static delete(table: string, condition: string = "", ...args: any[]) {
+    let query = `DELETE FROM ${this.connection.escapeId(table)}`;
+
+    const params: any[] = [];
+    if (condition) {
+      query += " WHERE " + condition;
+
+      const args = Array.from(arguments);
+      args.splice(0, 2);
       params.push(...args);
     }
 
