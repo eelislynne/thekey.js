@@ -19,8 +19,12 @@ Route.set(route, callback, methods, middleware, middlewareFail)
 
 ## Middleware
 
-The middleware callback should return the "user" object (or just true). The object returned from the callback can then be accessed with `Middleware.user()`
-
+The middleware callback should return the "user" object (or just true). The object returned from the callback can then be accessed from the middleware object passed in as the third argument to callback set with `Route.set`
+```javascript
+Route.set("/", (req, params, middleware) => {
+    return response().json(middleware.user());
+}, "ALL", middleware)
+``` 
 
 
 ### Todo
