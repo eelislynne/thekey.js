@@ -4,25 +4,15 @@ import Route from "../Classes/Route";
 import Util from "../Classes/Util";
 import BaseController from "../Controllers/BaseController";
 
-Route.set("/", async (req) => {
+Route.set("/", async (req, params) => {
 
-  await DB.update(
-    "players",
-    {
-      name: "testing",
-    },
-    "uid = ?",
-    3
-  );
-
-  return response().json({
-    "req_ip": Util.getGlientIP(req),
-    "success": true
-  });
+  return response().string("hello world");
 }, "GET");
 
 async function middleware() {
-  return false;
+  return {
+    username: "Username123"
+  };
 }
 
 async function fail() {
@@ -32,6 +22,6 @@ async function fail() {
   } as WebResponse;
 }
 
-Route.set("/mw/:test", async () => {
-  return response(200).string(BaseController.helloWorld());
+Route.set("/mw/:test", async (req, params, middleware) => {
+  return response(200).json(middleware.user());
 }, "GET", middleware, fail);

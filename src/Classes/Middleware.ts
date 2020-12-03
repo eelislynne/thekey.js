@@ -1,20 +1,20 @@
 export default class Middleware {
-  private static userObj: any = null;
-  private static auth: boolean = false;
+  private userObj: any = null;
+  private auth: boolean = false;
 
-  public static user() {
+  public user() {
     return this.userObj;
   }
 
-  public static setUser(obj: any) {
+  public setUser(obj: any) {
     this.userObj = obj;
   }
 
-  public static authorized() {
+  public authorized() {
     return this.auth;
   }
 
-  public static setAuth(val: boolean) {
+  public setAuth(val: boolean) {
     this.auth = val;
   }
 }

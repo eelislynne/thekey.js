@@ -11,7 +11,7 @@ server.register(require("fastify-static"), {
 });
 
 export interface WebCallback {
-  (req: FastifyRequest, params: any): Promise<WebResponse>;
+  (req: FastifyRequest, params: any, middleware: Middleware): Promise<WebResponse>;
 }
 export interface MiddlewareCallback {
   (req: FastifyRequest, params: any): Promise<object | boolean>;
@@ -69,12 +69,13 @@ export default class Route {
     mwFail: WebCallback
   ) {
     return async (req: FastifyRequest, res: FastifyReply) => {
+      const middle = new Middleware();
       if (middleware.length) {
         for (const mw of middleware) {
           const user = await mw(req, req.params as any);
           if (!user) {
             if (mwFail) {
-              this.convertResponse(res, await mwFail(req, req.params as any));
+              this.convertResponse(res, await mwFail(req, req.params as any, middle));
             } else {
               res.code(403).send({
                 success: false,
@@ -84,14 +85,14 @@ export default class Route {
             }
             return;
           } else {
-            Middleware.setAuth(true);
+            middle.setAuth(true);
             if (typeof user === "object") {
-              Middleware.setUser(user);
+              middle.setUser(user);
             }
           }
         }
       }
-      this.convertResponse(res, await cb(req, req.params as any));
+      this.convertResponse(res, await cb(req, req.params as any, middle));
     };
   }
 
