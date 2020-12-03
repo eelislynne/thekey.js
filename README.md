@@ -24,6 +24,4 @@ The middleware callback should return the "user" object (or just true). The obje
 
 
 ### Todo
-* Fix missing typings
-* Fix middleware
 * Add a non-static/object based API for DB 
