@@ -1,4 +1,4 @@
-import { FastifyRequest } from "fastify";
+import { FastifyRequest } from 'fastify';
 
 export default class Request {
   private req;
@@ -6,8 +6,8 @@ export default class Request {
     this.req = req;
   }
 
-  public input(name: string) {
-    if (this.req.method.toLowerCase() === "get") {
+  public input(name: string): string | string[] {
+    if (this.req.method.toLowerCase() === 'get') {
       return this.inputGet(name);
     }
 
@@ -15,15 +15,15 @@ export default class Request {
     return value === null ? this.inputGet(name) : value;
   }
 
-  public inputGet(name: string) {
-    return (this.req.query as any)[name] || null;
+  public inputGet(name: string): string | string[] {
+    return (this.req.query as Record<string, string | string[]>)[name] || null;
   }
 
-  public inputPost(name: string) {
-    return (this.req.body as any)[name] || null;
+  public inputPost(name: string): string | string[] {
+    return (this.req.body as Record<string, string | string[]>)[name] || null;
   }
 
-  public inputSpecial(name: string) {
-    return (this.req.body as any)[name] || null;
+  public inputSpecial(name: string): unknown {
+    return (this.req.body as Record<string, unknown>)[name] || null;
   }
 }

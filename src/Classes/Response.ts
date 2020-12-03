@@ -1,4 +1,4 @@
-export default function response(code = 200) {
+export default function response(code = 200): Response {
   const res = new Response();
   res.code = code;
 
@@ -7,14 +7,14 @@ export default function response(code = 200) {
 
 export interface WebResponse {
   code: number;
-  data: any;
+  data: unknown;
   redirect?: string;
 }
 
 class Response {
   public code: number;
 
-  json(data: object | any): WebResponse {
+  json(data: object | unknown): WebResponse {
     return {
       code: this.code,
       data,

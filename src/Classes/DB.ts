@@ -1,56 +1,46 @@
-import { Connection, createConnection, createPool, MysqlError, Pool, Query } from "mysql";
-import Environment from "../environment";
+import { createPool, MysqlError, Pool } from 'mysql';
+import Environment from '../environment';
 
 export default class DB {
   private static connection: Pool;
 
-  static connected() {
-    return !!this.connection; // && ["authenticated", "connected"].includes(this.connection.state);
+  static connected(): boolean {
+    return !!this.connection;
   }
 
-  static connect() {
+  static connect(): Promise<boolean> {
     return new Promise<boolean>((res, rej) => {
       if (this.connected()) {
         return res();
       }
 
       const pool = createPool(Environment.database);
-      pool.on("error", (err: any) => {
-        console.log("mysql database error:", err);
+      pool.on('error', (err: MysqlError) => {
+        console.log('mysql database error:', err);
         return rej();
       });
 
       this.connection = pool;
-
-      /*connection.connect((err) => {
-        if (err) {
-          console.log("mysql connection error: " + err);
-          return rej();
-        }
-
-        this.connection = connection;
-        return res();
-      });*/
     });
   }
 
-  static disconnect() {
+  static disconnect(): void {
     if (this.connected()) {
       this.connection.end();
       this.connection = null;
-      console.log("mysql disconnected");
+      console.log('mysql disconnected');
     }
   }
 
-  static insert(table: string, value: object) {
-    return new Promise(async (resolve, reject) => {
-      if (!this.connected()) await this.connect();
+  static async insert(table: string, value: object): Promise<object> {
+    if (!this.connected()) await this.connect();
+    return new Promise((resolve, reject) => {
 
       const query = `INSERT INTO ${this.connection.escapeId(table)} SET ?`;
 
       this.connection.query(query, value, function (err, results) {
         if (err) {
-          console.log("mysql error", err);
+          console.log('mysql error', err);
           reject(err);
         } else {
           resolve(results);
@@ -59,63 +49,61 @@ export default class DB {
     });
   }
 
-  static update(
+  static async update(
     table: string,
-    value: object,
-    condition: string = "",
-    ...args: any[]
-  ) {
-    const params: string[] = [];
+    value: Record<string, unknown>,
+    condition = '',
+    ...parameters: unknown[]): Promise<object> {
+    const params: unknown[] = [];
     let query = `UPDATE ${this.connection.escapeId(table)} SET`;
 
     const valKeys = Object.keys(value);
     for (const key of valKeys) {
       query += ` ${this.connection.escapeId(key)} = ?,`;
-      params.push((value as any)[key]);
+      params.push(value[key]);
     }
 
     query = query.substr(0, query.length - 1);
 
     if (condition) {
-      query += " WHERE " + condition;
+      query += ' WHERE ' + condition;
 
-      const args = Array.from(arguments);
-      args.splice(0, 3);
+      const args = Array.from(parameters);
+      // args.splice(0, 3);
       params.push(...args);
     }
-
-    return new Promise(async (resolve, reject) => {
-      if (!this.connected()) await this.connect();
-
+    
+    if (!this.connected()) await this.connect();
+    return new Promise((resolve, reject) => {
       this.connection.query(query, params, function (err, results) {
         if (err) {
-          console.log("mysql error", err);
+          console.log('mysql error', err);
           reject(err);
         } else {
           resolve(results);
         }
       });
-    });
+    });    
   }
 
-  static delete(table: string, condition: string = "", ...args: any[]) {
+  static async delete(table: string, condition = '', ...parameters: unknown[]): Promise<object> {
     let query = `DELETE FROM ${this.connection.escapeId(table)}`;
 
-    const params: any[] = [];
+    const params: unknown[] = [];
     if (condition) {
-      query += " WHERE " + condition;
+      query += ' WHERE ' + condition;
 
-      const args = Array.from(arguments);
-      args.splice(0, 2);
+      const args = Array.from(parameters);
+      // args.splice(0, 2);
       params.push(...args);
     }
 
-    return new Promise(async (resolve, reject) => {
-      if (!this.connected()) await this.connect();
+    if (!this.connected()) await this.connect();
+    return new Promise((resolve, reject) => {
 
       this.connection.query(query, params, function (err, results) {
         if (err) {
-          console.log("mysql error", err);
+          console.log('mysql error', err);
           reject(err);
         } else {
           resolve(results);
@@ -124,9 +112,9 @@ export default class DB {
     });
   }
 
-  static query(...args: any): Promise<any[]> {
-    return new Promise(async (resolve, reject) => {
-      if (!this.connected()) await this.connect();
+  static async query(...args: string[]): Promise<object[]> {
+    if (!this.connected()) await this.connect();
+    return new Promise((resolve, reject) => {
 
       const a = [...args];
 
@@ -134,17 +122,17 @@ export default class DB {
 
       this.connection.query(query, a, function (
         err: MysqlError,
-        results: any[]
+        results: Record<string, unknown>[]
       ) {
         if (err) {
-          console.log("mysql error", err);
+          console.log('mysql error', err);
           reject(err);
         } else {
           for (const res of results) {
             const keys = Object.keys(res);
             for (const key of keys) {
-              if (res[key] === "true") res[key] = true;
-              if (res[key] === "false") res[key] = false;
+              if (res[key] === 'true') res[key] = true;
+              if (res[key] === 'false') res[key] = false;
             }
           }
 
@@ -154,7 +142,7 @@ export default class DB {
     });
   }
 
-  static async queryOne(...args: any): Promise<any> {
+  static async queryOne(...args: string[]): Promise<object> {
     const results = await this.query(...args);
     if (!results.length) return null;
     return results[0];

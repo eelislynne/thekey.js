@@ -1,0 +1,47 @@
+{
+    "env": {
+        "browser": false,
+        "es2021": true
+    },
+    "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "ecmaVersion": 12,
+        "sourceType": "module"
+    },
+    "plugins": [
+        "@typescript-eslint"
+    ],
+    "rules": {
+        "indent": [
+            "error",
+            2
+        ],
+        "linebreak-style": [
+            "error",
+            "windows"
+        ],
+        "quotes": [
+            "error",
+            "single"
+        ],
+        "semi": [
+            "error",
+            "always"
+        ],
+        "prefer-rest-params": "off",
+        "no-multiple-empty-lines": "warn",
+        "@typescript-eslint/ban-types": ["error",
+            {
+                "types": {
+                    "object": false
+                },
+                "extendDefaults": true
+            }
+        ],
+        "@typescript-eslint/explicit-module-boundary-types": "off"
+    }
+}

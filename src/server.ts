@@ -1,6 +1,6 @@
-import DB from "./Classes/DB";
+import DB from './Classes/DB';
 
-console.log("Starting TheKey.js...");
+console.log('Starting TheKey.js...');
 
 DB.connect();
 

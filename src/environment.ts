@@ -3,9 +3,9 @@ export default class Environment {
 
   static database = {
     connectionLimit: 10,
-    host: "localhost",
-    user: "root",
-    password: "",
-    database: "test_database",
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'test_database',
   };
 }
