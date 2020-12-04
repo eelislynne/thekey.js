@@ -1,7 +1,7 @@
 # thekey.js
 TheKey.js is a TypeScript framework built on top of Fastify, which provides a database API and a standardized way of writing controllers.
 
-The name and structure of this framework is shared with TheKey PHP version. This framework is meant as a backend API server.
+The name and structure of this framework is shared with [TheKey PHP version](https://github.com/KieranHolroyd/TheKey). This framework is meant as a backend API server.
 
 * lib/Routes.ts: Sets all routes, their callbacks, methods and middleware.
 * Controllers/: Location for all controllers, middlewares and services.
