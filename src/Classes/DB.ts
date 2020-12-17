@@ -54,6 +54,7 @@ export default class DB {
     value: Record<string, unknown>,
     condition = '',
     ...parameters: unknown[]): Promise<object> {
+    if (!this.connected()) await this.connect();
     const params: unknown[] = [];
     let query = `UPDATE ${this.connection.escapeId(table)} SET`;
 
@@ -73,7 +74,6 @@ export default class DB {
       params.push(...args);
     }
     
-    if (!this.connected()) await this.connect();
     return new Promise((resolve, reject) => {
       this.connection.query(query, params, function (err, results) {
         if (err) {
@@ -87,6 +87,7 @@ export default class DB {
   }
 
   static async delete(table: string, condition = '', ...parameters: unknown[]): Promise<object> {
+    if (!this.connected()) await this.connect();
     let query = `DELETE FROM ${this.connection.escapeId(table)}`;
 
     const params: unknown[] = [];
@@ -98,7 +99,6 @@ export default class DB {
       params.push(...args);
     }
 
-    if (!this.connected()) await this.connect();
     return new Promise((resolve, reject) => {
 
       this.connection.query(query, params, function (err, results) {
