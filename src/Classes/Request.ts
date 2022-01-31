@@ -1,4 +1,4 @@
-import { FastifyRequest } from 'fastify';
+import { FastifyRequest } from "fastify";
 
 export default class Request {
   private req;
@@ -7,7 +7,7 @@ export default class Request {
   }
 
   public input(name: string): string | string[] {
-    if (this.req.method.toLowerCase() === 'get') {
+    if (this.req.method.toLowerCase() === "get") {
       return this.inputGet(name);
     }
 

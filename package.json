@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "The ultra fast and simple NodeJS framework",
   "main": "server.ts",
+  "type": "module",
   "scripts": {
     "serve": "tsc-watch --project . --outDir ./dist --onSuccess \"nodemon ./dist/server.js\"",
     "prod": "tsc && node dist/server.js",
@@ -17,7 +18,10 @@
     "bcrypt": "^5.0.0",
     "cpx": "^1.5.0",
     "fastify": "^3.8.0",
+    "fastify-cookie": "^5.5.0",
+    "fastify-cors": "^6.0.2",
     "fastify-formbody": "^5.0.0",
+    "fastify-sse-v2": "^2.0.6",
     "fastify-static": "^3.3.0",
     "mysql": "^2.18.1",
     "nodemon": "^2.0.6",

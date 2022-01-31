@@ -8,6 +8,7 @@ export default function response(code = 200): Response {
 export interface WebResponse {
   code: number;
   data: unknown;
+  type?: string;
   redirect?: string;
 }
 
@@ -39,6 +40,18 @@ class Response {
     return {
       code,
       redirect,
+    };
+  }
+
+  none(): WebResponse {
+    return null;
+  }
+
+  send(type: string, buffer: Buffer) {
+    return {
+      code: this.code,
+      data: buffer,
+      type,
     };
   }
 }

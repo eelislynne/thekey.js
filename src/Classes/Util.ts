@@ -1,9 +1,9 @@
-import * as bcrypt from 'bcrypt';
-import * as crypto from 'crypto';
-import { FastifyRequest } from 'fastify';
+/*import * as bcrypt from 'bcrypt';
+import * as crypto from 'crypto';*/
+import { FastifyRequest } from "fastify";
 
 export default class Util {
-  static async hash(data: unknown): Promise<string> {
+  /*static async hash(data: unknown): Promise<string> {
     return bcrypt.hash(data, 10);
   }
 
@@ -12,11 +12,11 @@ export default class Util {
   }
 
   static md5(string: string): string {
-    return crypto.createHash('md5').update(string).digest('hex');
-  }
+    return crypto.createHash("md5").update(string).digest("hex");
+  }*/
 
   static getGlientIP(req: FastifyRequest): string {
-    const cfHeader = req.headers['HTTP_CF_CONNECTING_IP'];
+    const cfHeader = req.headers["HTTP_CF_CONNECTING_IP"];
     if (!cfHeader) {
       return req.ip;
     }
@@ -25,10 +25,10 @@ export default class Util {
 
   static randomStr(
     len: number,
-    chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
   ): string {
     const charCount = chars.length;
-    let output = '';
+    let output = "";
     for (let i = 0; i < len; i++) {
       output += chars.charAt(Math.floor(Math.random() * charCount));
     }

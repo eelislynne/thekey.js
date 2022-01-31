@@ -2,11 +2,11 @@ export default class Middleware {
   private userObj: object = null;
   private auth = false;
 
-  public user(): object {
+  public value(): object {
     return this.userObj;
   }
 
-  public setUser(obj: object): void {
+  public setValue(obj: object): void {
     this.userObj = obj;
   }
 
